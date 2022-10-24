@@ -20,3 +20,11 @@ func ReadFile(fileName string) string {
 
 	return str
 }
+
+func sum64(array []int64) int64 {
+	var result int64 = 0
+	for _, v := range array {
+		result += v
+	}
+	return result
+}
