@@ -6,6 +6,9 @@ func main() {
 	fmt.Println("Let AOC begin!!")
 
 	//day one
-	dayone()
+	//dayone()
+
+	//day two
+	daytwo()
 
 }
