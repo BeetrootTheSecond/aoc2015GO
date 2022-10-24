@@ -9,6 +9,9 @@ func main() {
 	//dayone()
 
 	//day two
-	daytwo()
+	//daytwo()
+
+	//day two
+	daythree()
 
 }
