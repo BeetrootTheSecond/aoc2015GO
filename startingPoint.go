@@ -1,6 +1,8 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+)
 
 func main() {
 	fmt.Println("Let AOC begin!!")
@@ -11,7 +13,10 @@ func main() {
 	//day two
 	//daytwo()
 
-	//day two
-	daythree()
+	//day three
+	//daythree()
+
+	//day four
+	dayfour()
 
 }
