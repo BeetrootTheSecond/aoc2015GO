@@ -16,11 +16,6 @@ func dayfive() {
 
 	var lines []string = strings.Split(data, "\n")
 
-	//fmt.Println(lines)
-
-	//match, _ := regexp.MatchString("p([a-z]+)ch", "peach")
-	//fmt.Println(match)
-
 	//three vowels
 	///[aeiou].*?[aeiou].*?[aeiou]/gm
 	vowelReg, _ := regexp.Compile("[aeiou].*?[aeiou].*?[aeiou]")
