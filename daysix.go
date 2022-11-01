@@ -4,6 +4,9 @@ import (
 	"fmt"
 	"image"
 	"image/color"
+	"image/color/palette"
+	"image/gif"
+	"os"
 	"strconv"
 	"strings"
 )
@@ -21,7 +24,7 @@ func daysix() {
 
 	fmt.Println("Day Six GO!")
 
-	var data string = ReadFile("./data/day6/data.rawr")
+	var data string = ReadFile("./data/day6/sample.rawr")
 
 	var lines []string = strings.Split(data, "\n")
 	fmt.Printf("Data length : %v\n", len(lines))
@@ -86,15 +89,16 @@ func daysix() {
 		processLines = append(processLines, newInstruction)
 	}
 
-	fmt.Printf("processLines : %v\n", processLines)
+	//fmt.Printf("processLines : %v\n", processLines)
 	//strings.Contains(lines[3], "cd")
 
 	var lightsGrid [1000][1000]bool
 	fmt.Printf("Data length : %v\n", len(lightsGrid))
 
 	var lightsGridBrightness [1000][1000]int
-	// var frames []*image.Image
-	// var delays []int
+	var frames []*image.Paletted
+	var delays []int
+	delays = append(delays, 30)
 
 	for i := range processLines {
 		var currentInstruction = processLines[i]
@@ -132,6 +136,10 @@ func daysix() {
 					}
 				}
 
+				frame := createImage(lightsGrid)
+				frames = append(frames, frame)
+				//delays = append(delays, 5)
+
 			}
 
 		}
@@ -139,6 +147,14 @@ func daysix() {
 		// frames = append(frames, frame)
 		// delays = append(delays, 10)
 	}
+	//gif creation
+
+	f, _ := os.OpenFile("data/day6/DataAnimatedAllTheFrames.gif", os.O_WRONLY|os.O_CREATE, 0600)
+	defer f.Close()
+	gif.EncodeAll(f, &gif.GIF{
+		Image: frames,
+		Delay: delays,
+	})
 
 	var countLitLights int = 0
 	var countLitbrightness int = 0
@@ -179,25 +195,26 @@ func daysix() {
 
 }
 
-func createImage(lightsGrid [1000][1000]bool) *image.RGBA {
+func createImage(lightsGrid [1000][1000]bool) *image.Paletted {
 	width := 1000
 	height := 1000
 	upLeft := image.Point{0, 0}
 	lowRight := image.Point{width, height}
+	white := color.RGBA{255, 255, 255, 0xff}
+	black := color.RGBA{0, 0, 0, 0xff}
 
-	img := image.NewRGBA(image.Rectangle{upLeft, lowRight})
+	img := image.NewPaletted(image.Rectangle{upLeft, lowRight}, palette.WebSafe)
 
-	red := color.RGBA{255, 0, 0, 0xff}
-	green := color.RGBA{0, 255, 0, 0xff}
 	for x := 0; x < width; x++ {
 		for y := 0; y < height; y++ {
 			if lightsGrid[x][y] {
-				img.Set(x, y, green)
+				img.Set(x, y, white)
 			} else {
-				img.Set(x, y, red)
+				img.Set(x, y, black)
 
 			}
 		}
+		fmt.Printf("row : %v\n", x)
 	}
 
 	return img
