@@ -4,18 +4,17 @@ import (
 	"fmt"
 	"image"
 	"image/color"
-	"image/png"
-	"os"
 	"strconv"
 	"strings"
 )
 
 type instruction struct {
-	newState  int
-	startingX int
-	startingY int
-	endingX   int
-	endingY   int
+	newState   int
+	startingX  int
+	startingY  int
+	endingX    int
+	endingY    int
+	brightness int
 }
 
 func daysix() {
@@ -80,6 +79,8 @@ func daysix() {
 			panic(errEndingY)
 		}
 
+		//star two
+		newInstruction.brightness = 0
 		//fmt.Printf("Data length : %v remaining line : %v \n", newInstruction, line)
 
 		processLines = append(processLines, newInstruction)
@@ -91,6 +92,10 @@ func daysix() {
 	var lightsGrid [1000][1000]bool
 	fmt.Printf("Data length : %v\n", len(lightsGrid))
 
+	var lightsGridBrightness [1000][1000]int
+	// var frames []*image.Image
+	// var delays []int
+
 	for i := range processLines {
 		var currentInstruction = processLines[i]
 		fmt.Printf("currentInstruction : %v \n", currentInstruction)
@@ -101,16 +106,24 @@ func daysix() {
 				case 0: // turn off
 					{
 						lightsGrid[x][y] = false
+						lightsGridBrightness[x][y] -= 1
+						if lightsGridBrightness[x][y] < 0 {
+							lightsGridBrightness[x][y] = 0
+						}
+
 						break
+
 					}
 				case 1: // turn on
 					{
 						lightsGrid[x][y] = true
+						lightsGridBrightness[x][y] += 1
 						break
 					}
 				case 2: //toggle
 					{
 						lightsGrid[x][y] = !lightsGrid[x][y]
+						lightsGridBrightness[x][y] += 2
 						break
 					}
 				default:
@@ -120,13 +133,53 @@ func daysix() {
 				}
 
 			}
-		}
 
+		}
+		// frame := createImage(lightsGrid)
+		// frames = append(frames, frame)
+		// delays = append(delays, 10)
 	}
 
 	var countLitLights int = 0
+	var countLitbrightness int = 0
 
 	//create image ?
+	width := 1000
+	height := 1000
+	// upLeft := image.Point{0, 0}
+	// lowRight := image.Point{width, height}
+
+	// img := image.NewRGBA(image.Rectangle{upLeft, lowRight})
+
+	// red := color.RGBA{255, 0, 0, 0xff}
+	// green := color.RGBA{0, 255, 0, 0xff}
+	for x := 0; x < width; x++ {
+		for y := 0; y < height; y++ {
+			if lightsGrid[x][y] {
+				//img.Set(x, y, green)
+				countLitLights = countLitLights + 1
+				countLitbrightness += lightsGridBrightness[x][y]
+			} else {
+				//img.Set(x, y, red)
+				countLitbrightness += lightsGridBrightness[x][y]
+			}
+		}
+	}
+
+	// // Encode as PNG.
+	// f, _ := os.Create("data/day6/Data.png")
+	// png.Encode(f, img)
+
+	var starOne = countLitLights
+	var starTwo = countLitbrightness
+
+	fmt.Printf("Star one result : %v\n", starOne)
+
+	fmt.Printf("Star two result : %v\n", starTwo)
+
+}
+
+func createImage(lightsGrid [1000][1000]bool) *image.RGBA {
 	width := 1000
 	height := 1000
 	upLeft := image.Point{0, 0}
@@ -140,7 +193,6 @@ func daysix() {
 		for y := 0; y < height; y++ {
 			if lightsGrid[x][y] {
 				img.Set(x, y, green)
-				countLitLights = countLitLights + 1
 			} else {
 				img.Set(x, y, red)
 
@@ -148,15 +200,5 @@ func daysix() {
 		}
 	}
 
-	// Encode as PNG.
-	f, _ := os.Create("data/day6/Data.png")
-	png.Encode(f, img)
-
-	var starOne = countLitLights
-	var starTwo = 0
-
-	fmt.Printf("Star one result : %v\n", starOne)
-
-	fmt.Printf("Star two result : %v\n", starTwo)
-
+	return img
 }
