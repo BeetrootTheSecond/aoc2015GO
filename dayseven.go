@@ -6,6 +6,11 @@ import (
 	"strings"
 )
 
+type wireLayout struct {
+	result   uint16
+	assigned bool
+}
+
 func dayseven() {
 
 	fmt.Println("Day Seven GO!")
@@ -15,14 +20,36 @@ func dayseven() {
 	var lines []string = strings.Split(data, "\n")
 	fmt.Printf("Data length : %v\n", len(lines))
 
-	type wireLayout struct {
-		result   uint16
-		assigned bool
-	}
-
 	var wireResults = make(map[string]wireLayout)
 
 	fmt.Printf("wireResults length : %v\n", len(wireResults))
+
+	wireResults = processWires(wireResults, lines)
+
+	var wireResultsStar2 = make(map[string]wireLayout)
+	wireResultsStar2["b"] = wireLayout{wireResults["a"].result, true}
+
+	wireResultsStar2 = processWires(wireResultsStar2, lines)
+	// // sample test
+	// fmt.Printf("d : %v\n", wireResults["d"].result)
+	// fmt.Printf("e : %v\n", wireResults["e"].result)
+	// fmt.Printf("f : %v\n", wireResults["f"].result)
+	// fmt.Printf("g : %v\n", wireResults["g"].result)
+	// fmt.Printf("h : %v\n", wireResults["h"].result)
+	// fmt.Printf("i : %v\n", wireResults["i"].result)
+	// fmt.Printf("x : %v\n", wireResults["x"].result)
+	// fmt.Printf("y : %v\n", wireResults["y"].result)
+
+	var starOne = wireResults["a"].result
+	var starTwo = wireResultsStar2["a"].result
+
+	fmt.Printf("Star one result : %v\n", starOne)
+
+	fmt.Printf("Star two result : %v\n", starTwo)
+
+}
+
+func processWires(wireResults map[string]wireLayout, lines []string) map[string]wireLayout {
 
 	for {
 		var loopValues []string
@@ -138,23 +165,22 @@ func dayseven() {
 				}
 			default:
 				{
+					if !wireResults[identifier].assigned {
 
-					// wireResults[identifier] = wireLayout{uint16(result), true}
-					// //fmt.Printf("assignment : %v\n", wireResults[identifier])
-					// fmt.Printf("assignment %v  :  %v\n", lines[operationIndex], wireResults[identifier].result)
+						if resultfirst, err := strconv.Atoi(splitOperation[0]); err == nil {
+							//fmt.Printf("%q looks like a number.\n", splitOperationRemians[0])
 
-					if resultfirst, err := strconv.Atoi(splitOperation[0]); err == nil {
-						//fmt.Printf("%q looks like a number.\n", splitOperationRemians[0])
-						wireResults[identifier] = wireLayout{uint16(resultfirst), true}
-						//fmt.Printf("assignment : %v\n", wireResults[identifier])
-						fmt.Printf("assignment Direct %v  :  %v\n", lines[operationIndex], wireResults[identifier].result)
-					} else if wireResults[splitOperation[0]].assigned {
-						wireResults[identifier] = wireLayout{wireResults[splitOperation[0]].result, true}
-						fmt.Printf("assignment %v  :  %v\n", lines[operationIndex], wireResults[identifier].result)
-					} else {
-						loopValues = append(loopValues, lines[operationIndex])
+							wireResults[identifier] = wireLayout{uint16(resultfirst), true}
+							//fmt.Printf("assignment : %v\n", wireResults[identifier])
+							fmt.Printf("assignment Direct %v  :  %v\n", lines[operationIndex], wireResults[identifier].result)
+						} else if wireResults[splitOperation[0]].assigned {
+							wireResults[identifier] = wireLayout{wireResults[splitOperation[0]].result, true}
+							fmt.Printf("assignment %v  :  %v\n", lines[operationIndex], wireResults[identifier].result)
+						} else {
+							loopValues = append(loopValues, lines[operationIndex])
+						}
+
 					}
-
 				}
 
 			}
@@ -168,21 +194,5 @@ func dayseven() {
 		}
 	}
 
-	// // sample test
-	// fmt.Printf("d : %v\n", wireResults["d"].result)
-	// fmt.Printf("e : %v\n", wireResults["e"].result)
-	// fmt.Printf("f : %v\n", wireResults["f"].result)
-	// fmt.Printf("g : %v\n", wireResults["g"].result)
-	// fmt.Printf("h : %v\n", wireResults["h"].result)
-	// fmt.Printf("i : %v\n", wireResults["i"].result)
-	// fmt.Printf("x : %v\n", wireResults["x"].result)
-	// fmt.Printf("y : %v\n", wireResults["y"].result)
-
-	var starOne = wireResults["a"].result
-	var starTwo = 0
-
-	fmt.Printf("Star one result : %v\n", starOne)
-
-	fmt.Printf("Star two result : %v\n", starTwo)
-
+	return wireResults
 }
