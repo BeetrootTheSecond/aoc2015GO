@@ -24,7 +24,7 @@ func daysix() {
 
 	fmt.Println("Day Six GO!")
 
-	var data string = ReadFile("./data/day6/sample.rawr")
+	var data string = ReadFile("./data/day6/data.rawr")
 
 	var lines []string = strings.Split(data, "\n")
 	fmt.Printf("Data length : %v\n", len(lines))
@@ -98,11 +98,21 @@ func daysix() {
 	var lightsGridBrightness [1000][1000]int
 	var frames []*image.Paletted
 	var delays []int
-	delays = append(delays, 30)
+	//delays = append(delays, 30)
+
+	//img creation
+	width := 1000
+	height := 1000
+	upLeft := image.Point{0, 0}
+	lowRight := image.Point{width, height}
+	white := color.RGBA{255, 255, 255, 0xff}
+	black := color.RGBA{0, 0, 0, 0xff}
+
+	img := image.NewPaletted(image.Rectangle{upLeft, lowRight}, palette.WebSafe)
 
 	for i := range processLines {
 		var currentInstruction = processLines[i]
-		fmt.Printf("currentInstruction : %v \n", currentInstruction)
+		fmt.Printf("currentInstruction : %v : %v \n", i, currentInstruction)
 
 		for x := currentInstruction.startingX; x <= currentInstruction.endingX; x++ {
 			for y := currentInstruction.startingY; y <= currentInstruction.endingY; y++ {
@@ -114,7 +124,8 @@ func daysix() {
 						if lightsGridBrightness[x][y] < 0 {
 							lightsGridBrightness[x][y] = 0
 						}
-
+						//img creation
+						img.Set(x, y, black)
 						break
 
 					}
@@ -122,12 +133,20 @@ func daysix() {
 					{
 						lightsGrid[x][y] = true
 						lightsGridBrightness[x][y] += 1
+
+						//img creation
+						img.Set(x, y, white)
 						break
 					}
 				case 2: //toggle
 					{
 						lightsGrid[x][y] = !lightsGrid[x][y]
 						lightsGridBrightness[x][y] += 2
+						if lightsGrid[x][y] {
+							img.Set(x, y, white)
+						} else {
+							img.Set(x, y, black)
+						}
 						break
 					}
 				default:
@@ -136,9 +155,10 @@ func daysix() {
 					}
 				}
 
-				frame := createImage(lightsGrid)
+				//frame := createImage(lightsGrid)
+				frame := img
 				frames = append(frames, frame)
-				//delays = append(delays, 5)
+				delays = append(delays, 10)
 
 			}
 
@@ -160,8 +180,8 @@ func daysix() {
 	var countLitbrightness int = 0
 
 	//create image ?
-	width := 1000
-	height := 1000
+	//width := 1000
+	//height := 1000
 	// upLeft := image.Point{0, 0}
 	// lowRight := image.Point{width, height}
 
