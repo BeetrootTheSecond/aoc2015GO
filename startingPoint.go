@@ -44,5 +44,8 @@ func main() {
 	//daytweleve()
 
 	//daythirdteen
-	daythirdteen()
+	//daythirdteen()
+
+	//dayfourteen
+	dayfourteen()
 }
