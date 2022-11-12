@@ -28,3 +28,51 @@ func sum64(array []int64) int64 {
 	}
 	return result
 }
+
+func findIndex[T any](slice []T, matchFunc func(T) bool) int {
+	for index, element := range slice {
+		if matchFunc(element) {
+			return index
+		}
+	}
+
+	return -1 // not found
+}
+func removeElementByIndex[T any](slice []T, index int) []T {
+	sliceLen := len(slice)
+	sliceLastIndex := sliceLen - 1
+
+	if index == sliceLastIndex {
+		return slice[:index]
+	}
+
+	return append(slice[:index], slice[index+1:]...)
+}
+
+func permutations(arr []string) [][]string {
+	var helper func([]string, int)
+	result := [][]string{}
+
+	helper = func(arr []string, n int) {
+		if n == 1 {
+			tmp := make([]string, len(arr))
+			copy(tmp, arr)
+			result = append(result, tmp)
+		} else {
+			for i := 0; i < n; i++ {
+				helper(arr, n-1)
+				if n%2 == 1 {
+					tmp := arr[i]
+					arr[i] = arr[n-1]
+					arr[n-1] = tmp
+				} else {
+					tmp := arr[0]
+					arr[0] = arr[n-1]
+					arr[n-1] = tmp
+				}
+			}
+		}
+	}
+	helper(arr, len(arr))
+	return result
+}

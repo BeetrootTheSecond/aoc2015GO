@@ -97,31 +97,3 @@ func daynine() {
 	fmt.Printf("Star two result : %v\n", starTwo)
 
 }
-
-func permutations(arr []string) [][]string {
-	var helper func([]string, int)
-	result := [][]string{}
-
-	helper = func(arr []string, n int) {
-		if n == 1 {
-			tmp := make([]string, len(arr))
-			copy(tmp, arr)
-			result = append(result, tmp)
-		} else {
-			for i := 0; i < n; i++ {
-				helper(arr, n-1)
-				if n%2 == 1 {
-					tmp := arr[i]
-					arr[i] = arr[n-1]
-					arr[n-1] = tmp
-				} else {
-					tmp := arr[0]
-					arr[0] = arr[n-1]
-					arr[n-1] = tmp
-				}
-			}
-		}
-	}
-	helper(arr, len(arr))
-	return result
-}
